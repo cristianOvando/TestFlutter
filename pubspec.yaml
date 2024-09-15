@@ -1,25 +1,22 @@
 name: testflutter
-description: "A new Flutter project."
+description: A new Flutter project.
 publish_to: 'none' 
 
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.5.2
+  sdk: '>=3.5.2 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-
+  http: ^0.13.5
   cupertino_icons: ^1.0.8
-
-  # Agregar el paquete url_launcher
-  url_launcher: ^6.1.11  # Verifica si hay una nueva versión y actualízala si es necesario
+  url_launcher: ^6.1.11
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^4.0.0
 
 flutter:
