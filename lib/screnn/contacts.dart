@@ -6,7 +6,7 @@ class ContactsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Datos del equipo
+  
     final Map<String, Map<String, String>> teamMembers = {
       'Miembro1': {
         'name': 'Cristian Ovando Gómez',
@@ -22,7 +22,6 @@ class ContactsScreen extends StatelessWidget {
       },
     };
 
-    // Lista de widgets para cada miembro del equipo
     final List<Widget> teamMembersList = teamMembers.entries.map((entry) {
       return ListTile(
         subtitle: Text(entry.value['name'] ?? '',
@@ -30,12 +29,11 @@ class ContactsScreen extends StatelessWidget {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Botón de llamada
             Container(
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.greenAccent),
+                border: Border.all(color: const Color.fromARGB(255, 0, 0, 0)),
                 borderRadius: BorderRadius.circular(50),
-                color: Colors.orange.withOpacity(0.1),
+                color: const Color.fromARGB(255, 0, 140, 255).withOpacity(0.1),
               ),
               child: IconButton(
                 color: const Color.fromARGB(255, 0, 0, 0),
@@ -58,12 +56,11 @@ class ContactsScreen extends StatelessWidget {
 
             const SizedBox(width: 10),
 
-            // Botón de mensaje
             Container(
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.lightGreen),
+                border: Border.all(color: const Color.fromARGB(255, 0, 0, 0)),
                 borderRadius: BorderRadius.circular(50),
-                color: Colors.orange.withOpacity(0.1),
+                color: const Color.fromARGB(255, 0, 255, 64).withOpacity(0.1),
               ),
               child: IconButton(
                 color: const Color.fromARGB(255, 0, 0, 0),
@@ -90,9 +87,6 @@ class ContactsScreen extends StatelessWidget {
 
     // Construcción de la pantalla
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Contactos del Equipo'),
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

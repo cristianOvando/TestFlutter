@@ -4,6 +4,8 @@ import 'package:testflutter/screnn/StudentForm.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -19,11 +21,11 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
+          const Text(
             'Cristian Ovando Gómez',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () async {
               final Uri url =
@@ -32,13 +34,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 throw 'No se pudo abrir el enlace $url';
               }
             },
-            child: Text('Visitar mi repositorio'),
+            child: const Text('Visitar mi repositorio'),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
         ],
       ),
     ),
-    ContactsScreen(),
+    const ContactsScreen(),
     StudentForm()
   ];
 
@@ -51,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Pantalla Principal')),
+      appBar: AppBar(title: const Text('221256')),
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,

@@ -9,10 +9,12 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Proyecto Flutter',
+      title: 'Test Flutter',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/home', 
       routes: {
         '/home': (context) => HomeScreen(),
-        '/contacts': (context) => ContactsScreen(),
+        '/contacts': (context) => const ContactsScreen(),
         '/studentform': (context) => StudentForm(),
         '/studentlist': (context) => StudentList(),
       },
