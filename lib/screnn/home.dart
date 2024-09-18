@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:testflutter/screnn/contacts.dart';
 import 'package:testflutter/screnn/StudentForm.dart';
+import 'package:testflutter/screnn/contacts.dart';
+import 'package:testflutter/screnn/text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final String name = 'Cristian Ovando Gómez';
+  final String matricula = '221256';
 
   int _selectedIndex = 0;
 
@@ -25,13 +27,17 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircleAvatar(
+            const CircleAvatar(
               radius: 50,
               backgroundImage: AssetImage('images/yo.jpg'),
             ),
             const SizedBox(height: 20),
             Text(
               name,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              matricula,
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
@@ -48,8 +54,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+      const TextScreen(),
       const ContactsScreen(),
-      StudentForm()
+      const StudentForm()
     ]);
   }
 
@@ -62,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('221256')),
+      appBar: AppBar(title: const Text('TEST FLUTTER')),
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
@@ -71,8 +78,12 @@ class _HomeScreenState extends State<HomeScreen> {
         unselectedItemColor: Colors.black,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.person),
             label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.message),
+            label: 'Text',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.contacts),

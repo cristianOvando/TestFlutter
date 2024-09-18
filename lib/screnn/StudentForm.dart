@@ -26,11 +26,11 @@ class TextFieldClass extends StatelessWidget {
   final FormFieldValidator<String>? validator;
 
   const TextFieldClass({
-    Key? key,
+    super.key,
     required this.labelText,
     this.onSaved,
     this.validator,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

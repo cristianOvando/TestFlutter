@@ -4,9 +4,34 @@ import 'package:url_launcher/url_launcher.dart';
 class ContactsScreen extends StatelessWidget {
   const ContactsScreen({super.key});
 
+  // Método para hacer una llamada
+  Future<void> _makePhoneCall(String phoneNumber, BuildContext context) async {
+    final telUrl = 'tel:$phoneNumber'; // Número a marcar
+    final Uri telUri = Uri.parse(telUrl);
+    if (!await launchUrl(telUri, mode: LaunchMode.externalApplication)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No se pudo iniciar la llamada al número: $phoneNumber'),
+        ),
+      );
+    }
+  }
+
+  // Método para enviar un mensaje de texto
+  Future<void> _sendMessage(String phoneNumber, BuildContext context) async {
+    final smsUrl = 'sms:$phoneNumber'; // Número al que enviar el mensaje
+    final Uri smsUri = Uri.parse(smsUrl);
+    if (!await launchUrl(smsUri, mode: LaunchMode.externalApplication)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No se pudo enviar el mensaje al número: $phoneNumber'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-  
     final Map<String, Map<String, String>> teamMembers = {
       'Miembro1': {
         'name': 'Cristian Ovando Gómez',
@@ -14,11 +39,11 @@ class ContactsScreen extends StatelessWidget {
       },
       'Miembro2': {
         'name': 'Martin Ochoa Espinosa',
-        'phone': '9651193170'
+        'phone': '9651193170',
       },
       'Miembro3': {
         'name': 'Diego Ortiz Cruz',
-        'phone': '9181071656'
+        'phone': '9181071656',
       },
     };
 
@@ -29,6 +54,7 @@ class ContactsScreen extends StatelessWidget {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // Botón de llamada
             Container(
               decoration: BoxDecoration(
                 border: Border.all(color: const Color.fromARGB(255, 0, 0, 0)),
@@ -38,24 +64,13 @@ class ContactsScreen extends StatelessWidget {
               child: IconButton(
                 color: const Color.fromARGB(255, 0, 0, 0),
                 icon: const Icon(Icons.phone),
-                onPressed: () async {
-                  final phoneNumber =
-                      Uri.parse('tel:${entry.value['phone']}');
-                  if (await canLaunchUrl(phoneNumber)) {
-                    await launchUrl(phoneNumber);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('No se pudo realizar la llamada a ${entry.value['phone']}'),
-                      ),
-                    );
-                  }
+                onPressed: () {
+                  _makePhoneCall(entry.value['phone'] ?? '', context);
                 },
               ),
             ),
-
             const SizedBox(width: 10),
-
+            // Botón de mensaje
             Container(
               decoration: BoxDecoration(
                 border: Border.all(color: const Color.fromARGB(255, 0, 0, 0)),
@@ -65,18 +80,8 @@ class ContactsScreen extends StatelessWidget {
               child: IconButton(
                 color: const Color.fromARGB(255, 0, 0, 0),
                 icon: const Icon(Icons.message),
-                onPressed: () async {
-                  final messageNumber =
-                      Uri.parse('sms:${entry.value['phone']}');
-                  if (await canLaunchUrl(messageNumber)) {
-                    await launchUrl(messageNumber);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('No se pudo enviar el mensaje a ${entry.value['phone']}'),
-                      ),
-                    );
-                  }
+                onPressed: () {
+                  _sendMessage(entry.value['phone'] ?? '', context);
                 },
               ),
             ),
@@ -87,6 +92,7 @@ class ContactsScreen extends StatelessWidget {
 
     // Construcción de la pantalla
     return Scaffold(
+      appBar: AppBar(title: const Text('Equipo de Desarrollo')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

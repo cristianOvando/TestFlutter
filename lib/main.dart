@@ -3,9 +3,10 @@ import 'package:testflutter/screnn/StudentList.dart';
 import 'package:testflutter/screnn/contacts.dart';
 import 'package:testflutter/screnn/home.dart';
 import 'package:testflutter/screnn/StudentForm.dart';
+import 'package:testflutter/screnn/text.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -21,10 +22,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false, 
       initialRoute: '/home', 
       routes: {
-        '/home': (context) => HomeScreen(),
+        '/home': (context) => const HomeScreen(),
         '/contacts': (context) => const ContactsScreen(),
-        '/studentform': (context) => StudentForm(),
-        '/studentlist': (context) => StudentList(),
+        '/text':(context) => const TextScreen(),
+        '/studentform': (context) => const StudentForm(),
+        '/studentlist': (context) => const StudentList(),
       },
     );
   }
