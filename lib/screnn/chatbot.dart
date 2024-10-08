@@ -132,14 +132,14 @@ class _ChatbotPageState extends State<ChatbotPage> {
                     padding: const EdgeInsets.all(12.0),
                     decoration: BoxDecoration(
                       color: isUserMessage
-                          ? Colors.blueAccent
-                          : Colors.grey[300],
+                          ? const Color.fromARGB(255, 0, 247, 41)
+                          : const Color.fromARGB(255, 214, 0, 0),
                       borderRadius: BorderRadius.circular(15.0),
                     ),
                     child: Text(
                       message['message']!,
                       style: TextStyle(
-                        color: isUserMessage ? Colors.white : Colors.black,
+                        color: isUserMessage ? const Color.fromARGB(255, 0, 0, 0) : const Color.fromARGB(255, 110, 209, 255),
                       ),
                     ),
                   ),
@@ -164,7 +164,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
                 const SizedBox(width: 8.0),
                 IconButton(
                   icon: const Icon(Icons.send),
-                  color: _isConnected ? Colors.blueAccent : Colors.grey,
+                  color: _isConnected ? const Color.fromARGB(255, 0, 0, 0) : const Color.fromARGB(255, 0, 148, 49),
                   onPressed: _isConnected
                       ? () {
                           if (_controller.text.isNotEmpty) {
