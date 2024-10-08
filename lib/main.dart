@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:testflutter/screnn/StudentList.dart';
+import 'package:testflutter/screnn/chatbot.dart';
 import 'package:testflutter/screnn/contacts.dart';
 import 'package:testflutter/screnn/home.dart';
 import 'package:testflutter/screnn/StudentForm.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         '/text':(context) => const TextScreen(),
         '/studentform': (context) => const StudentForm(),
         '/studentlist': (context) => const StudentList(),
+        '/chatbot':(context) => const ChatbotPage()
       },
     );
   }

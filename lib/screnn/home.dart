@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:testflutter/screnn/StudentForm.dart';
+import 'package:testflutter/screnn/chatbot.dart';
 import 'package:testflutter/screnn/contacts.dart';
 import 'package:testflutter/screnn/text.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -54,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      const TextScreen(),
+      const ChatbotPage(),
       const ContactsScreen(),
       const StudentForm()
     ]);
@@ -83,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.message),
-            label: 'Text',
+            label: 'ChatBot',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.contacts),
