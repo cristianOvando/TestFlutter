@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:testflutter/screnn/StudentForm.dart';
 import 'package:testflutter/screnn/chatbot.dart';
 import 'package:testflutter/screnn/contacts.dart';
-import 'package:testflutter/screnn/text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
