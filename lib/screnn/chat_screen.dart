@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart'; //Persistencia de datos
 import 'dart:async';
 
 void main() {
@@ -245,15 +245,15 @@ class _ChatbotPageState extends State<ChatbotPage> {
                 const SizedBox(width: 8.0),
                 IconButton(
                   icon: const Icon(Icons.send),
-                  color: _isConnected ? Colors.greenAccent : Colors.grey,
-                  onPressed: () {
-                    final text = _controller.text;
-                    if (_isMessageValid(text)) {
-                      sendMessage(text.trim());
-                    } else {
-                      print('No se puede enviar el mensaje. Campo vacío.');
-                    }
-                  },
+                  color: _isConnected ? const Color.fromARGB(255, 105, 240, 105) : Colors.grey,
+                  onPressed: _isConnected
+                      ? () {
+                          final text = _controller.text;
+                          if (_isMessageValid(text)) {
+                            sendMessage(text.trim());
+                          }
+                        }
+                      : null,
                 ),
               ],
             ),
