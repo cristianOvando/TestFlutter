@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class QrCodeScanner extends StatelessWidget {
   QrCodeScanner({super.key});
@@ -15,11 +16,11 @@ class QrCodeScanner extends StatelessWidget {
       body: MobileScanner(
         controller: controller,
         onDetect: (BarcodeCapture capture) {
-          final List<Barcode> barcodes = capture.barcodes;
-
-          for (final barcode in barcodes) {
+          if (capture.barcodes.isNotEmpty) {
+            final Barcode barcode = capture.barcodes.first;
             if (barcode.rawValue != null) {
-              _showDialog(context, barcode.rawValue!);
+              final String qrContent = barcode.rawValue!;
+              _handleQrContent(context, qrContent);
             }
           }
         },
@@ -27,6 +28,16 @@ class QrCodeScanner extends StatelessWidget {
     );
   }
 
+  // Manejar el contenido del QR
+  void _handleQrContent(BuildContext context, String qrContent) {
+    if (_isValidUrl(qrContent)) {
+      _launchUrl(qrContent); // Si es una URL válida, redirigir
+    } else {
+      _showDialog(context, qrContent); // Mostrar el contenido en un diálogo si no es una URL
+    }
+  }
+
+  // Mostrar diálogo con el contenido escaneado
   void _showDialog(BuildContext context, String qrContent) {
     showDialog(
       context: context,
@@ -45,5 +56,19 @@ class QrCodeScanner extends StatelessWidget {
         );
       },
     );
+  }
+
+  // Verificar si el contenido del QR es una URL válida
+  bool _isValidUrl(String url) {
+    return Uri.tryParse(url)?.hasAbsolutePath ?? false;
+  }
+
+  // Redirigir a la URL usando url_launcher
+  Future<void> _launchUrl(String url) async {
+    if (await canLaunchUrlString(url)) {
+      await launchUrlString(url);
+    } else {
+      throw 'No se pudo abrir la URL: $url';
+    }
   }
 }

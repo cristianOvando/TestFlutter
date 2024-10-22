@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const CircleAvatar(
-                radius: 70,
+                radius: 80,
                 backgroundImage: AssetImage('assets/images/logoUP.jpg'),
               ),
               const SizedBox(height: 20),
@@ -88,11 +88,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _launchGitHub() async {
-    const url = 'https://github.com/cristianOvando/AppMovilHerramientas';
+    const url = 'https://github.com/cristianOvando/TestFlutter';
     final Uri uri = Uri.parse(url);
 
     if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
+      await launchUrl(uri, mode: LaunchMode.externalApplication); 
     } else {
       throw 'No se pudo lanzar $url';
     }

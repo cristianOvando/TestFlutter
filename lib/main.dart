@@ -40,12 +40,12 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   static final List<Widget> _pages = <Widget>[
-    HomeScreen(),
+    const HomeScreen(),
     const LocationStatusScreen(),
     QrCodeScanner(),
-    SensorPlusPage(),
-    SpeechToTextView(),
-    TextToSpeechView(),
+    const SensorPlusPage(),
+    const SpeechToTextView(),
+    const TextToSpeechView(),
   ];
 
   void _onItemTapped(int index) {

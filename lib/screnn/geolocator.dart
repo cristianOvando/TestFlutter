@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class LocationStatusScreen extends StatefulWidget {
   const LocationStatusScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _LocationStatusScreenState createState() => _LocationStatusScreenState();
 }
 
@@ -51,7 +50,6 @@ class _LocationStatusScreenState extends State<LocationStatusScreen> {
     }
 
     // Obtener la ubicación actual
-    // ignore: deprecated_member_use
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     DateTime currentTime = DateTime.now();
 
@@ -100,10 +98,8 @@ class _LocationStatusScreenState extends State<LocationStatusScreen> {
   Future<void> _openInGoogleMaps() async {
     if (_lastPosition != null) {
       final url = 'https://www.google.com/maps/search/?api=1&query=${_lastPosition!.latitude},${_lastPosition!.longitude}';
-      // ignore: deprecated_member_use
-      if (await canLaunch(url)) {
-        // ignore: deprecated_member_use
-        await launch(url);
+      if (await canLaunchUrlString(url)) {
+        await launchUrlString(url);
       } else {
         throw 'No se pudo abrir Google Maps';
       }
