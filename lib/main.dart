@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:testflutter/screnn/geolocator.dart';
+import 'package:testflutter/screnn/chat_screen.dart';
 import 'package:testflutter/screnn/home.dart';
-import 'package:testflutter/screnn/qrflutter.dart';
-import 'package:testflutter/screnn/sensorplus.dart';
-import 'package:testflutter/screnn/speech.dart';
-import 'package:testflutter/screnn/text.dart';
 
 void main() {
   runApp(const MyApp());
@@ -41,11 +37,7 @@ class _MainScreenState extends State<MainScreen> {
 
   static final List<Widget> _pages = <Widget>[
     const HomeScreen(),
-    const LocationStatusScreen(),
-    QrCodeScanner(),
-    const SensorPlusPage(),
-    const SpeechToTextView(),
-    const TextToSpeechView(),
+    const ChatbotPage()
   ];
 
   void _onItemTapped(int index) {
@@ -66,29 +58,13 @@ class _MainScreenState extends State<MainScreen> {
             label: 'Perfil',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add_location),
-            label: 'Geolocalización',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.qr_code),
-            label: 'QR',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.sensors),
-            label: 'Sensores',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.mic),
-            label: 'Habla',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.audiotrack),
-            label: 'Sonido',
+            icon: Icon(Icons.chat),
+            label: 'ChatBot',
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: const Color.fromARGB(255, 24, 102, 0), // Color del ícono seleccionado
-        unselectedItemColor: const Color.fromARGB(255, 0, 0, 0), // Color de los íconos no seleccionados
+        selectedItemColor: const Color.fromARGB(255, 170, 192, 71), 
+        unselectedItemColor: const Color.fromARGB(255, 0, 0, 0), 
         onTap: _onItemTapped,
       ),
     );

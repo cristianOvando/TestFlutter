@@ -3,8 +3,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart'; //Persistencia de datos
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 void main() {
   runApp(const MyApp());
@@ -31,22 +33,40 @@ class ChatbotPage extends StatefulWidget {
 
 class _ChatbotPageState extends State<ChatbotPage> {
   final String apiUrl =
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyDjnR4t4xfwYQ44yuE7MNcsOqBlEV289Nc'; //API KEY
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=TU_API'; // API KEY
 
   final TextEditingController _controller = TextEditingController();
   final List<Map<String, String>> _messages = [];
   final FocusNode _focusNode = FocusNode();
-  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  final scrollController = ScrollController();
 
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    });
+  }
+
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   bool _isConnected = true;
   bool _isThinking = false;
-  final List<String> _emojis = ['😊', '😄', '😎', '😉', '👍', '🎉', '🤖', '💬'];
+
+  // Speech-to-Text and Text-to-Speech
+  final FlutterTts _flutterTts = FlutterTts();
+  late stt.SpeechToText _speechToText;
+  bool _isListening = false;
 
   @override
   void initState() {
     super.initState();
     _checkConnection();
     _loadHistory();
+
+    _speechToText = stt.SpeechToText();
+    _initializeTts();
 
     _connectivitySubscription =
         Connectivity().onConnectivityChanged.listen((result) {
@@ -56,12 +76,12 @@ class _ChatbotPageState extends State<ChatbotPage> {
     });
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    _focusNode.dispose();
-    _connectivitySubscription.cancel();
-    super.dispose();
+  Future<void> _initializeTts() async {
+    await _flutterTts.setLanguage("en-US");
+    await _flutterTts.setPitch(1.0);
+    await _flutterTts.setSpeechRate(0.5);
+    await _flutterTts.setVolume(1.0);
+    await _flutterTts.awaitSpeakCompletion(true);
   }
 
   Future<void> _checkConnection() async {
@@ -96,32 +116,17 @@ class _ChatbotPageState extends State<ChatbotPage> {
     await prefs.remove('chat_history');
   }
 
-  String _getRandomEmoji() {
-    final random = Random();
-    return _emojis[random.nextInt(_emojis.length)];
-  }
-
-  bool _isMessageValid(String message) {
-    final cleanedMessage = message.trim();
-    return cleanedMessage.isNotEmpty;
-  }
-
-  String _buildConversationContext() {
-    return _messages
-        .map((msg) => '${msg["sender"]}: ${msg["message"]}')
-        .join('\n');
-  }
-
   Future<void> sendMessage(String message) async {
-  setState(() {
-    _messages.add({"sender": "user", "message": message});
-    _isThinking = true;
-    _controller.clear(); 
-  });
+    setState(() {
+      _messages.add({"sender": "user", "message": message});
+      _isThinking = true;
+      _controller.clear();
+    });
 
-  Future.microtask(() async {
     try {
-      final conversationContext = _buildConversationContext();
+      final conversationContext = _messages
+          .map((msg) => '${msg["sender"]}: ${msg["message"]}')
+          .join('\n');
 
       final response = await http.post(
         Uri.parse(apiUrl),
@@ -137,21 +142,19 @@ class _ChatbotPageState extends State<ChatbotPage> {
         }),
       );
 
-      print('Response body: ${response.body}'); 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        final botMessage =
-            data["candidates"]?[0]?["content"]?["parts"]?[0]?["text"] ?? 
-            'No response';
+        final botMessage = 
+          (data["candidates"]?[0]?["content"]?["parts"]?[0]?["text"] ?? 'No response')
+            .replaceAll('*', ''); 
 
-        final botMessageWithEmoji = '$botMessage ${_getRandomEmoji()}';
 
         setState(() {
-          _messages.add({"sender": "bot", "message": botMessageWithEmoji});
+          _messages.add({"sender": "bot", "message": botMessage});
         });
+
+        await _flutterTts.speak(botMessage); 
       } else {
-        print('Error status: ${response.statusCode}');
-        print('Error body: ${response.body}');
         setState(() {
           _messages.add({
             "sender": "bot",
@@ -168,15 +171,43 @@ class _ChatbotPageState extends State<ChatbotPage> {
         _isThinking = false;
       });
       await _saveHistory();
+      _scrollToBottom();
     }
-  });
-}
+  }
+
+  Future<void> _startListening() async {
+    if (!_isListening && await _speechToText.initialize()) {
+      setState(() => _isListening = true);
+      _speechToText.listen(onResult: (result) {
+        if (result.finalResult) {
+          sendMessage(result.recognizedWords);
+          setState(() => _isListening = false);
+        }
+      });
+    }
+  }
+
+  Future<void> _stopListening() async {
+    if (_isListening) {
+      await _speechToText.stop();
+      setState(() => _isListening = false);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _flutterTts.stop();
+    _speechToText.stop();
+    _connectivitySubscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chatbot'),
+        title: const Text('Chatbot con Voz'),
         actions: [
           IconButton(
             icon: const Icon(Icons.delete),
@@ -188,20 +219,10 @@ class _ChatbotPageState extends State<ChatbotPage> {
         children: [
           Expanded(
             child: ListView.builder(
+              controller: scrollController,
               padding: const EdgeInsets.all(10.0),
-              itemCount: _messages.length + (_isThinking ? 1 : 0),
+              itemCount: _messages.length,
               itemBuilder: (context, index) {
-                if (_isThinking && index == _messages.length) {
-                  return const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Text('Pensando...',
-                          style: TextStyle(fontStyle: FontStyle.italic)),
-                    ),
-                  );
-                }
-
                 final message = _messages[index];
                 final isUserMessage = message['sender'] == 'user';
 
@@ -227,36 +248,33 @@ class _ChatbotPageState extends State<ChatbotPage> {
               },
             ),
           ),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    focusNode: _focusNode,
-                    decoration: const InputDecoration(
-                      hintText: 'Escribe un mensaje...',
-                      border: OutlineInputBorder(),
-                    ),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _controller,
+                  focusNode: _focusNode,
+                  decoration: const InputDecoration(
+                    hintText: 'Escribe un mensaje...',
+                    border: OutlineInputBorder(),
                   ),
                 ),
-                const SizedBox(width: 8.0),
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  color: _isConnected ? const Color.fromARGB(255, 105, 240, 105) : Colors.grey,
-                  onPressed: _isConnected
-                      ? () {
-                          final text = _controller.text;
-                          if (_isMessageValid(text)) {
-                            sendMessage(text.trim());
-                          }
-                        }
-                      : null,
-                ),
-              ],
-            ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.mic),
+                onPressed: _isListening ? _stopListening : _startListening,
+                color: _isListening ? Colors.red : const Color.fromARGB(255, 26, 110, 28),
+              ),
+              IconButton(
+                icon: const Icon(Icons.send),
+                onPressed: () {
+                  final text = _controller.text.trim();
+                  if (text.isNotEmpty) {
+                    sendMessage(text);
+                  }
+                },
+              ),
+            ],
           ),
         ],
       ),
